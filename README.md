@@ -13,4 +13,4 @@
 
 
 
-## 二、 用Linked Connect 7681 實際製作
+## 二、 用LinkIt Connect 7681 實際製作
