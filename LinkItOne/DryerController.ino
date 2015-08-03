@@ -47,7 +47,7 @@ void loop()
 
   if (dht.readHT(&t, &h))
   {
-    Serial.println("------------------------------");
+    Serial.println("\n------------------------------");
     Serial.print("temperature = ");
     Serial.println(t);
     sendValueToMCS(t, "Temperature");
@@ -58,7 +58,10 @@ void loop()
 
   }
 
-  delay(10000);
+  delay(30000);
+}
+
+void connectToAP(){
 }
 
 void sendValueToMCS(float value, String channelId) {
@@ -66,6 +69,13 @@ void sendValueToMCS(float value, String channelId) {
   Serial.println("Connecting to WebSite");
   while (0 == content.connect(SITE_URL, 80))
   {
+    LWiFi.disconnect();
+    while (0 == LWiFi.connect(WIFI_AP, LWiFiLoginInfo(WIFI_AUTH, WIFI_PASSWORD)))
+    {
+      Serial.println("Waiting for reconnected to AP...");
+      delay(1000);
+    }
+    
     Serial.println("Re-Connecting to WebSite");
     delay(1000);
   }
@@ -73,7 +83,7 @@ void sendValueToMCS(float value, String channelId) {
   Serial.println("send HTTP GET request");
   String action = "POST /mcs/v2/devices/";
   action += DEVICE_ID;
-  action += "datapoints.csv HTTP/1.1";
+  action += "/datapoints.csv HTTP/1.1";
   content.println(action);
 
   String data = channelId + ",,";
@@ -92,13 +102,17 @@ void sendValueToMCS(float value, String channelId) {
   content.println(data);
 
   // waiting for server response
+  int count = 0;
   Serial.println("waiting HTTP response:");
-  while (!content.available())
+  while (!content.available() && count <= 50)
   {
+    count += 1;
+    Serial.println(count);
     delay(100);
   }
 
   // Make sure we are connected, and dump the response content to Serial
+
   while (content)
   {
     int v = content.read();
@@ -106,15 +120,7 @@ void sendValueToMCS(float value, String channelId) {
     {
       Serial.print((char)v);
     }
-    else
-    {
-      Serial.println("no more content, disconnect");
-      content.stop();
-      while (1)
-      {
-        delay(1);
-      }
-    }
+
 
   }
 
