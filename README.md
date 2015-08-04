@@ -1,14 +1,14 @@
 # 用 LinkIt One 自己做一個烘衣機自動停止開關 - Step by Step
 前一陣子用了多年的烘衣機壞了，原本想修理一下繼續使用，不過考量安全問題，還是買了台新的。但是新機器在使用上有一點不便利之處，尤其是依據設定的烘乾時間結束之後，有時衣服還是溼的；不然就是設定的時間過長以至於浪費了許多電力。這次打算使用[LinkIt One](http://labs.mediatek.com/site/global/developer_tools/mediatek_linkit/whatis_linkit/index.gsp)來做一個裝置，可以在烘衣機上設定足夠烘乾衣服的時間，但當衣服已經烘好時，提前結束烘乾的行程以節省電力。
 
-運用LinkIt One現成的範例來修改，以迭代的方式，並儘量減少程式碼（雖然我喜歡寫程式），逐步建構出一個「外掛」的烘衣機自動停止開關。雖然直接取代原本的定時開關感覺比較厲害，但是我想在保固內仍以不拆開機器為原則，本著迭代開發的精神，先完成這個版本。
+運用LinkIt One現成的範例來修改，以迭代（iteration）的方式，並儘量減少程式碼（雖然我喜歡寫程式），逐步建構出一個「外掛」的烘衣機自動停止開關。雖然直接取代原本的定時開關感覺比較厲害，但是我想在保固內仍以不拆開機器為原則，本著迭代開發的精神，先完成這個版本。
 
-在學習各種開發板的使用時，溫溼度計、繼電器...是常看到的範例，有趣的是這些範例可以做出一個有用的裝置的！
-在這裡分享一下使用LinkIt One搭配 [MediaTek Cloud Sandbox (MCS)](https://mcs.mediatek.com/zh-TW) 以及我邊做邊學的過程！
+在學習各種開發板的使用時，溫溼度計、繼電器...是常看到的範例，有趣的是這些範例可以用在這裡做出一個有用的裝置的！
+以下分享一下使用LinkIt One搭配 [MediaTek Cloud Sandbox (MCS)](https://mcs.mediatek.com/zh-TW) 以及我邊做邊學的過程！
 
 ## 想法
-在衣服烘乾的過程中，烘乾機所排出的空氣溼度應該會逐漸降低，直到持續在一個溼度不再降低時，應該就是已經烘好了（我是這麼認為），此時就可以切斷烘乾機的電源。
-所以我計劃在 LinkIt One上實作一個雛型並測試，試看看這個概念是否可行。步驟如下：<br>
+在衣服烘乾的過程中，烘乾機所排出的空氣溼度應該會逐漸降低，直到持續在一個溼度不再降低時，應該就是已經烘好了（是這麼認為啦），此時就可以切斷烘乾機的電源。
+於是計劃在 LinkIt One上實作一個雛型並測試，試看看這個概念是否可行。步驟如下：<br>
 步驟 1：使用 [LinkIt One + Grove](http://www.seeedstudio.com/depot/Grove-Starter-Kit-for-LinkIt-ONE-p-2028.html) - Temperature & Humidity Sensor Pro 偵測溫、溼度。<br>
 步驟 2：讓LinkIt One連接 WiFi，將溫溼度數據傳送到MCS，觀察自開始烘乾到結束時溫溼度的變化，以確認烘衣機排氣的溼度可以用來決定是否提前關閉烘衣機。MCS在這個階段的主要任務是紀錄資料，然後運用這些資料驗證可行性。   <br>
 步驟 3：若驗證上述方式是可行的，再加入繼電器用來控制電源。<br>
@@ -321,21 +321,32 @@ void sendValueToMCS(float value, String channelId) {
 }
 ```
 
-我真的洗了一堆衣服，然後開始烘乾，並且把LinkIt One拿去測試。程式每10秒鐘開始將溫溼度傳送到MCS。此時，也可以看到MCS的Console上面數據不斷的變化。一個多小時之後，衣服乾了。　　　
-我想看一下，這段時間的數據。雖然MCS Console上面可以察看歷史資料，也可以只顯示一個區間的數據。
+我真的洗了一堆衣服，然後開始烘乾，並且把LinkIt One拿去測試。程式每10秒鐘開始將溫溼度傳送到MCS。此時，也可以看到MCS的Console上面數據不斷的變化。一個多小時之後，衣服乾了。   接著需要觀察這段時間的數據。雖然MCS Console上面可以察看歷史資料，也可以只顯示一個區間的數據。
 ![2015-08-04 18 31 08](https://cloud.githubusercontent.com/assets/12403337/9058838/05cdfc6e-3ad7-11e5-8c81-83792868b28b.png)
 
-可是不知道什麼緣故，就是沒辦法顯示我所望的區間。不過，還是可以透過RESTful的API來取得（[說明文件](https://mcs.mediatek.com/resources/zh-TW/latest/api_references/)）：
-還是可以分別透過以下這兩個URL來取得資料：
+不過就是沒辦法順利顯示我所期望的區間。不過，還是可以透過RESTful的API來取得（[說明文件](https://mcs.mediatek.com/resources/zh-TW/latest/api_references/)）：
+我用以下這兩個URL來取得資料：
 https://api.mediatek.com/mcs/v2/devices/D5mzZo0s/datachannels/Humidity/datapoints.csv?start=1438589400000&end=1438596600000&limit=1000
 https://api.mediatek.com/mcs/v2/devices/D5mzZo0s/datachannels/Temperature/datapoints.csv?start=1438589400000&end=1438596600000&limit=1000
 有幾個需要注意的地方：
 * 直接在瀏覽器上打開這兩個網址會得到 HTTP 401 的錯誤，需要另外在HTTP GET 的 header 中加入 DeviceKey。
 可以用Postman之類的工具做到。
 ![2015-08-04 17 25 47](https://cloud.githubusercontent.com/assets/12403337/9058100/43f85184-3ad1-11e5-954c-d6892c15dab6.png)
+* 在 API的說明文件中指出，若有指定區間則limit這個參數是沒有作用的。實際上若不用limit指定數量，就只會顯示一筆資料。
 
-* 資料取得之後，用熟悉的試算表工具把這些數據以圖表方式顯現。
+資料取得之後，用熟悉的試算表工具把這些數據以圖表方式顯現。
 可以發現溫度會不斷上升，而溼度會不斷下降，而在衣服烘乾時趨於穩定（不過我似乎太早結束實驗）。
 
-
 ![2015-08-04 17 38 33](https://cloud.githubusercontent.com/assets/12403337/9058099/42fdc1c4-3ad1-11e5-894c-c116fdba1ec9.png)
+
+這些數據有兩個問題：
+* 在測試過程中LinkIt One到WiFi AP 經常有斷線的情況，只好手動重置，也造成了資料不連續。
+* 資料的抖動（jitter）過大，有可能會造成誤判。
+
+
+因此，接下來要做以下的改善：
+* 當程式發現網路斷線時，必須能夠自動恢復
+* 用程式實現低通濾波器消除資料的抖動，讓溫、溼度數據的曲線變得平滑，易於判斷。
+
+這就在下一個迭代進行。
+（待續）
