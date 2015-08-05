@@ -26,7 +26,7 @@
 * 本文實作的環境是 Arduino 1.5.7 + MediaTek LinkIt ONE SDK 1.1.05 (for Arduino)
 
 ##2. 使用溫溼度感測器 - 直接使用範例程式
-使用 Grove Starter Kit，連麵包版都省了！  
+使用 Grove Starter Kit，連麵包板都省了！  
 首先，找來
 [Grove Starter Kit for LinkIt ONE 的程式範例](https://github.com/Seeed-Studio/Grove_Starter_Kit_For_LinkIt)，可以將這整包下載，解壓縮後複製到Arduino IDE安裝路徑下的example裏面，接著就可以方便地運用了。
 ![2015-08-03 11 23 01](https://cloud.githubusercontent.com/assets/12403337/9030220/47977ad6-39d2-11e5-9416-98e888ec1d23.png )
