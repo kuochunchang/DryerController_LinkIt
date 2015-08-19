@@ -51,12 +51,12 @@
 ![2015-08-03 13 16 01](https://cloud.githubusercontent.com/assets/12403337/9031202/cfa146a0-39e1-11e5-85fa-dab9b52b008e.png)
 然後依據個人實際環境去修改21~24行，尤其是WIFI_AUTH 要看清楚不要設定錯了啊！
 
-```c
+````c
 #define WIFI_AP "your_ap_ssid"
 #define WIFI_PASSWORD "your_password"
 #define WIFI_AUTH LWIFI_WEP  // choose from LWIFI_OPEN, LWIFI_WPA, or LWIFI_WEP.
 #define SITE_URL "arduino.cc"
-```
+````
 
 另外修改了第51行
 ```c
