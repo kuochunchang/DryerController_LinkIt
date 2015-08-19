@@ -108,14 +108,12 @@
  然後將這個範例　
  　　
 
- ```
-
- content.println("POST /mcs/v2/devices/D5mzZo0s/datapoints.csv HTTP/1.1"); ```
+` content.println("POST /mcs/v2/devices/D5mzZo0s/datapoints.csv HTTP/1.1"); `
 
 
 這一行以後的程式複製貼到剛才測試WiFi的程式裏面，略做修改...如下：
 
-``` c
+```c
 #include <LTask.h>
 #include <LWiFi.h>
 #include <LWiFiClient.h>
@@ -210,7 +208,7 @@ void loop()
 
 ###b. 將溫溼度感測器的數據定時送往MCS
 剛才，已經試過如何取得溼度感測器的數據，以及如何將資料傳送到MCS。先將這些程式碼先拼湊起來，如以下程式：
-```c++
+```c
 #include <LTask.h>
 #include <LWiFi.h>
 #include <LWiFiClient.h>
