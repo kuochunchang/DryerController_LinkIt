@@ -203,13 +203,14 @@ void loop()
   }
   delay(500);
 }
+
 ```
 執行之後，就可以看到MCS上面剛剛設定的 Temparature 這個資料通道的數值變成了程式指定的數值，這裡是28度。
 ![2015-08-03 15 01 02](https://cloud.githubusercontent.com/assets/12403337/9032364/8075b6a6-39f0-11e5-8b22-4acdffd85079.png)
 
 ###b. 將溫溼度感測器的數據定時送往MCS
 剛才，已經試過如何取得溼度感測器的數據，以及如何將資料傳送到MCS。先將這些程式碼先拼湊起來，如以下程式：
-```c
+```c++
 #include <LTask.h>
 #include <LWiFi.h>
 #include <LWiFiClient.h>
