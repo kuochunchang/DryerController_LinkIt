@@ -50,14 +50,14 @@
 如下所示使用WiFiWebClient這個範例程式。
 ![2015-08-03 13 16 01](https://cloud.githubusercontent.com/assets/12403337/9031202/cfa146a0-39e1-11e5-85fa-dab9b52b008e.png)
 然後依據個人實際環境去修改21~24行，尤其是WIFI_AUTH 要看清楚不要設定錯了啊！
-```c
+``` c
 #define WIFI_AP "your_ap_ssid"
 #define WIFI_PASSWORD "your_password"
 #define WIFI_AUTH LWIFI_WEP  // choose from LWIFI_OPEN, LWIFI_WPA, or LWIFI_WEP.
 #define SITE_URL "arduino.cc"
 ```
 另外修改了第51行
-```c
+``` c
   //c.println("GET / HTTP/1.1"); <--原來的
   c.println("GET /asciilogo.txt  HTTP/1.1");
 ```
@@ -108,12 +108,14 @@
  然後將這個範例　
  　　
 
- ```content.println("POST /mcs/v2/devices/D5mzZo0s/datapoints.csv HTTP/1.1"); ```
+ ```
+
+ content.println("POST /mcs/v2/devices/D5mzZo0s/datapoints.csv HTTP/1.1"); ```
 
 
 這一行以後的程式複製貼到剛才測試WiFi的程式裏面，略做修改...如下：
 
-```c
+``` c
 #include <LTask.h>
 #include <LWiFi.h>
 #include <LWiFiClient.h>
