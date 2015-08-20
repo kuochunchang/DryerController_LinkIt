@@ -4,6 +4,8 @@
 
 前一陣子用了多年的烘衣機壞了，原本想修理一下繼續使用，不過考量安全問題，還是買了台新的。但是新機器在使用上有一點不便利之處，尤其是依據設定的烘乾時間結束之後，有時衣服還是溼的；不然就是設定的時間過長以至於浪費了許多電力。這次打算使用[LinkIt One](http://labs.mediatek.com/site/global/developer_tools/mediatek_linkit/whatis_linkit/index.gsp)來做一個裝置，可以在烘衣機上先設定一定足夠烘乾衣服的時間，但當衣服已經烘好時，提前結束烘乾的行程以節省電力。
 
+![timer](https://cloud.githubusercontent.com/assets/12403337/9374429/8a13a69c-4728-11e5-9f46-1829d025056e.jpg)
+
 這次要運用LinkIt One現成的範例來修改，以迭代（iterate）的方式進行，並儘量減少程式碼（雖然我喜歡寫程式），逐步建構出一個「外掛」的烘衣機控制裝置。雖然直接取代原本的定時開關感覺比較厲害，但仍以不拆開機器為原則，先完成這個版本。
 
 
@@ -31,7 +33,7 @@
 * 本文實作的環境是 Arduino 1.5.7 + MediaTek LinkIt ONE SDK 1.1.05 (for Arduino)
 
 ##2. 使用溫溼度感測器 - 直接使用範例程式
-使用 Grove Starter Kit，連麵包板都省了！  
+使用 [Grove Starter Kit](http://www.seeedstudio.com/depot/Grove-Starter-Kit-for-LinkIt-ONE-p-2028.html)，連麵包板都省了！  
 首先，找來
 [Grove Starter Kit for LinkIt ONE 的程式範例](https://github.com/Seeed-Studio/Grove_Starter_Kit_For_LinkIt)，可以將這整包下載，解壓縮後複製到Arduino IDE安裝路徑下的example裏面，接著就可以方便地運用了。
 ![2015-08-03 11 23 01](https://cloud.githubusercontent.com/assets/12403337/9030220/47977ad6-39d2-11e5-9416-98e888ec1d23.png )
@@ -40,7 +42,6 @@
 直接用Grove_Temp_Humi_Sensor.ino這個範例程式。執行後，如圖：可以看到可以得知目前的溫溼度。
 （如果執行時出現「找不到 DHT.h ...」這樣的錯誤訊息，可以將這個[資料夾](https://github.com/Seeed-Studio/Grove_Starter_Kit_For_LinkIt/tree/master/libraries/Humidity_Temperature_Sensor)，複製到Arduino IDE安裝路徑下的library裏面）
 
-![2015-08-03 11 01 40](https://cloud.githubusercontent.com/assets/12403337/9030096/63807b64-39d0-11e5-913e-e92a92c5da1d.jpg)
 
 接著開始嘗試把這些數據透過WiFi連上網路傳送出去。
 
@@ -341,6 +342,9 @@ void sendValueToMCS(float value, String channelId) {
 ```
 
 我真的洗了一堆衣服，然後開始烘乾，並且把LinkIt One拿去測試。程式每10秒鐘開始將溫溼度傳送到MCS。此時，也可以看到MCS的Console上面數據不斷的變化。一個多小時之後，衣服乾了。   接著需要觀察這段時間的數據。雖然MCS Console上面可以察看歷史資料，也可以只顯示一個區間的數據。
+
+![testing](https://cloud.githubusercontent.com/assets/12403337/9374432/8dd701f2-4728-11e5-8dd1-5af07ae0299b.jpg)
+
 ![2015-08-04 18 31 08](https://cloud.githubusercontent.com/assets/12403337/9058838/05cdfc6e-3ad7-11e5-8c81-83792868b28b.png)
 
 不過就是沒辦法順利顯示所期望的區間。不過，還是可以透過RESTful的API來取得（[說明文件](https://mcs.mediatek.com/resources/zh-TW/latest/api_references/)）：
